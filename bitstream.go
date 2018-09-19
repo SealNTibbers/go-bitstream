@@ -177,18 +177,9 @@ func (b *BitWriter) Flush(bit Bit) error {
 	return nil
 }
 
-func (b *BitWriter) WriteBytesAsBits(bytes []byte) error {
-	var nbits uint
+func (b *BitWriter) WriteBytes(bytes []byte) error {
 	for _, dataByte := range bytes {
-		nbits = 8
-		for nbits > 0 {
-			err := b.WriteBit((dataByte >> 7) == 1)
-			if err != nil {
-				return err
-			}
-			dataByte <<= 1
-			nbits--
-		}
+		b.WriteByte(dataByte)
 	}
 	return nil
 }

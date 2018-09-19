@@ -241,7 +241,7 @@ func TestReset(t *testing.T) {
 func TestWriteBytesAsBits(t *testing.T) {
 	writer1 := bytes.NewBuffer(nil)
 	w1 := NewWriter(writer1)
-	w1.WriteBytesAsBits([]byte{0xFF, 0xAB})
+	w1.WriteBytes([]byte{0xFF, 0xAB})
 
 	if writer1.Bytes()[0] != byte(0xFF) {
 		t.Errorf("expected '0xFF', got=%x", writer1.Bytes()[0])
@@ -254,7 +254,7 @@ func TestWriteBytesAsBits(t *testing.T) {
 	w2 := NewWriter(writer2)
 
 	w2.WriteBits(0x8, 4)
-	w2.WriteBytesAsBits([]byte{0xFF, 0xAB})
+	w2.WriteBytes([]byte{0xFF, 0xAB})
 	w2.WriteBits(0x1, 4)
 
 	if writer2.Bytes()[0] != byte(0x8F) {
