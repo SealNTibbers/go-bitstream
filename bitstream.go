@@ -177,6 +177,22 @@ func (b *BitWriter) Flush(bit Bit) error {
 	return nil
 }
 
+func (b *BitWriter) WriteBytesAsBits(bytes []byte) error {
+	var nbits uint
+	for _, dataByte := range bytes {
+		nbits = 8
+		for nbits > 0 {
+			err := b.WriteBit((dataByte >> 7) == 1)
+			if err != nil {
+				return err
+			}
+			dataByte <<= 1
+			nbits--
+		}
+	}
+	return nil
+}
+
 // WriteBits writes the nbits least significant bits of u, most-significant-bit first.
 func (b *BitWriter) WriteBits(u uint64, nbits int) error {
 	u <<= (64 - uint(nbits))

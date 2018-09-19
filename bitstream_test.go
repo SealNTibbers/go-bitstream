@@ -237,3 +237,33 @@ func TestReset(t *testing.T) {
 		t.Errorf("expected 'b', got=%x", secondWriter.Bytes())
 	}
 }
+
+func TestWriteBytesAsBits(t *testing.T) {
+	writer1 := bytes.NewBuffer(nil)
+	w1 := NewWriter(writer1)
+	w1.WriteBytesAsBits([]byte{0xFF, 0xAB})
+
+	if writer1.Bytes()[0] != byte(0xFF) {
+		t.Errorf("expected '0xFF', got=%x", writer1.Bytes()[0])
+	}
+	if writer1.Bytes()[1] != byte(0xAB) {
+		t.Errorf("expected '0xFF', got=%x", writer1.Bytes()[1])
+	}
+
+	writer2 := bytes.NewBuffer(nil)
+	w2 := NewWriter(writer2)
+
+	w2.WriteBits(0x8, 4)
+	w2.WriteBytesAsBits([]byte{0xFF, 0xAB})
+	w2.WriteBits(0x1, 4)
+
+	if writer2.Bytes()[0] != byte(0x8F) {
+		t.Errorf("expected '0x8F', got=%x", writer2.Bytes()[0])
+	}
+	if writer2.Bytes()[1] != byte(0xFA) {
+		t.Errorf("expected '0xFA', got=%x", writer2.Bytes()[1])
+	}
+	if writer2.Bytes()[2] != byte(0xB1) {
+		t.Errorf("expected '0xB1', got=%x", writer2.Bytes()[2])
+	}
+}
