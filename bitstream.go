@@ -45,7 +45,7 @@ func (b *BitReader) ReadBit() (Bit, error) {
 		b.count = 8
 	}
 	b.count--
-	d := (b.b[0] & 0x80)
+	d := b.b[0] & 0x80
 	b.b[0] <<= 1
 	return d != 0, nil
 }

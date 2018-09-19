@@ -238,7 +238,7 @@ func TestReset(t *testing.T) {
 	}
 }
 
-func TestWriteBytesAsBits(t *testing.T) {
+func TestWriteReadBytes(t *testing.T) {
 	writer1 := bytes.NewBuffer(nil)
 	w1 := NewWriter(writer1)
 	w1.WriteBytes([]byte{0xFF, 0xAB})
@@ -255,6 +255,7 @@ func TestWriteBytesAsBits(t *testing.T) {
 
 	w2.WriteBits(0x8, 4)
 	w2.WriteBytes([]byte{0xFF, 0xAB})
+	w2.WriteBytes([]byte{0xEE, 0xDD})
 	w2.WriteBits(0x1, 4)
 
 	if writer2.Bytes()[0] != byte(0x8F) {
@@ -263,7 +264,34 @@ func TestWriteBytesAsBits(t *testing.T) {
 	if writer2.Bytes()[1] != byte(0xFA) {
 		t.Errorf("expected '0xFA', got=%x", writer2.Bytes()[1])
 	}
-	if writer2.Bytes()[2] != byte(0xB1) {
-		t.Errorf("expected '0xB1', got=%x", writer2.Bytes()[2])
+	if writer2.Bytes()[2] != byte(0xBE) {
+		t.Errorf("expected '0xBE', got=%x", writer2.Bytes()[2])
 	}
+	if writer2.Bytes()[3] != byte(0xED) {
+		t.Errorf("expected '0xED', got=%x", writer2.Bytes()[2])
+	}
+	if writer2.Bytes()[4] != byte(0xD1) {
+		t.Errorf("expected '0xD1', got=%x", writer2.Bytes()[2])
+	}
+
+	reader := NewReader(bytes.NewReader(writer2.Bytes()))
+	reader.ReadBits(4)
+	var dataByte byte
+	dataByte, _ = reader.ReadByte()
+	if dataByte != byte(0xFF) {
+		t.Errorf("expected '0xFF', got=%x", dataByte)
+	}
+	dataByte, _ = reader.ReadByte()
+	if dataByte != byte(0xAB) {
+		t.Errorf("expected '0xAB', got=%x", dataByte)
+	}
+	dataByte, _ = reader.ReadByte()
+	if dataByte != byte(0xEE) {
+		t.Errorf("expected '0xEE', got=%x", dataByte)
+	}
+	dataByte, _ = reader.ReadByte()
+	if dataByte != byte(0xDD) {
+		t.Errorf("expected '0xDD', got=%x", dataByte)
+	}
+
 }
