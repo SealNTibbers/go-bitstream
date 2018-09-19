@@ -274,7 +274,8 @@ func TestWriteReadBytes(t *testing.T) {
 		t.Errorf("expected '0xD1', got=%x", writer2.Bytes()[2])
 	}
 
-	reader := NewReader(bytes.NewReader(writer2.Bytes()))
+	bytesReader := bytes.NewReader(writer2.Bytes())
+	reader := NewReader(bytesReader)
 	reader.ReadBits(4)
 	var dataByte byte
 	dataByte, _ = reader.ReadByte()
@@ -285,6 +286,11 @@ func TestWriteReadBytes(t *testing.T) {
 	if dataByte != byte(0xAB) {
 		t.Errorf("expected '0xAB', got=%x", dataByte)
 	}
+
+	bytesReader.Reset(writer2.Bytes())
+	reader.Reset(bytesReader)
+	reader.ReadBits(20)
+
 	dataByte, _ = reader.ReadByte()
 	if dataByte != byte(0xEE) {
 		t.Errorf("expected '0xEE', got=%x", dataByte)
